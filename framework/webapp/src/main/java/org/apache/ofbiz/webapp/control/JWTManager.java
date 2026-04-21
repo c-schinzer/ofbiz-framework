@@ -91,12 +91,14 @@ public class JWTManager {
         String jwtToken = getHeaderAuthBearerToken(request);
         if (jwtToken == null) {
             // No Authorization header, no need to continue.
+            Debug.logVerbose("JWT token is null.", MODULE);
             return "success";
         }
 
         Map<String, Object> claims = validateJwtToken(jwtToken, getJWTKey(delegator));
         if (claims.containsKey(ModelService.ERROR_MESSAGE)) {
             // The JWT is wrong somehow, stop the process, details are in log
+            Debug.logError("An error happened with the claims retrieval from JWT", MODULE);
             return "success";
         }
 
@@ -105,12 +107,14 @@ public class JWTManager {
 
         if (UtilValidate.isNotEmpty(userLogin)) {
             // check userLogin base permission and if it is enabled
+            Debug.logVerbose("Set UserLogin on Session: " + userLogin, MODULE);
             request.getSession().setAttribute("userLogin", userLogin);
             userLogin = LoginWorker.checkLogout(request, response);
         }
 
         if (userLogin == null) {
             // No UserLogin GenericValue could be retrieved, stop the process, details are in log
+            Debug.logVerbose("No UserLogin found from Claims", MODULE);
             return "success";
         }
 
@@ -118,10 +122,12 @@ public class JWTManager {
 
         if (!storeUserlogin(userLogin)) {
             // We could not store the UserLogin GenericValue (very unlikely), stop the process, details are in log
+            Debug.logVerbose("UserLogin could not be stored: " + userLogin, MODULE);
             return "success";
         }
 
         LoginWorker.doBasicLogin(userLogin, request, response);
+        Debug.logVerbose("Basic Login completed", MODULE);
         return "success";
     }
 
