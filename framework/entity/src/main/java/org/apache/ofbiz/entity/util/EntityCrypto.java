@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ofbiz.base.crypto.DesCrypt;
 import org.apache.ofbiz.base.crypto.HashCrypt;
 import org.apache.ofbiz.base.util.Debug;
@@ -43,9 +44,6 @@ import org.apache.ofbiz.entity.transaction.TransactionUtil;
 import org.apache.shiro.crypto.cipher.AesCipherService;
 import org.apache.shiro.crypto.cipher.OperationMode;
 import org.apache.shiro.crypto.cipher.PaddingScheme;
-import org.apache.shiro.crypto.hash.DefaultHashService;
-import org.apache.shiro.crypto.hash.HashRequest;
-import org.apache.shiro.crypto.hash.HashService;
 
 public final class EntityCrypto {
 
@@ -229,13 +227,11 @@ public final class EntityCrypto {
     }
 
     protected static final class ShiroStorageHandler extends StorageHandler {
-        private final HashService hashService;
         private final AesCipherService cipherService;
         private final AesCipherService saltedCipherService;
         private final byte[] kek;
 
         protected ShiroStorageHandler(byte[] kek) {
-            hashService = new DefaultHashService();
             cipherService = new AesCipherService();
             cipherService.setMode(OperationMode.ECB);
             cipherService.setPaddingScheme(PaddingScheme.PKCS5);
@@ -250,8 +246,8 @@ public final class EntityCrypto {
 
         @Override
         protected String getHashedKeyName(String originalKeyName) {
-            HashRequest hashRequest = new HashRequest.Builder().setSource(originalKeyName).build();
-            return hashService.computeHash(hashRequest).toBase64();
+            // Preserve the deterministic Shiro 1.x identifier used by existing EntityKeyStore rows.
+            return Base64.encodeBase64String(DigestUtils.sha512(originalKeyName));
         }
 
         @Override

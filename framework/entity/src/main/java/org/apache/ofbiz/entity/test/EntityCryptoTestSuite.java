@@ -55,6 +55,9 @@ public class EntityCryptoTestSuite extends EntityTestCase {
         assertEquals(nanoTime, entity.getString("encryptedValue"));
         assertEquals(nanoTime, entity.getString("saltedEncryptedValue"));
         entity.store();
+        // The Shiro 1.x key identifier for TestingCrypto must survive the dependency upgrade.
+        String legacyKeyName = "nNCir3Xyp1d3IsC8/GHBOakE+xAUJuRc7PTuwihXEK2C7IdzwABRPEXURvUDxyFk5+21REPQw3ciBuEheDQEng==";
+        assertNotNull(EntityQuery.use(getDelegator()).from("EntityKeyStore").where("keyName", legacyKeyName).queryOne());
         entity.refresh();
         assertEquals(nanoTime, entity.getString("unencryptedValue"));
         assertEquals(nanoTime, entity.getString("encryptedValue"));

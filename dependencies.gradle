@@ -56,8 +56,10 @@ dependencies {
     implementation 'org.apache.poi:poi:4.1.2' // poi-ooxml-schemas-5.0.0.pom'. Received status code 401 from server
     implementation 'org.apache.pdfbox:pdfbox:3.0.8'
     implementation 'org.apache.pdfbox:pdfbox-io:3.0.8'
-    implementation 'org.apache.shiro:shiro-core:2.2.1'
-    implementation 'org.apache.shiro:shiro-crypto-cipher:2.2.1'
+    def shiroVersion = '2.2.1'
+    implementation "org.apache.shiro:shiro-crypto-cipher:${shiroVersion}"
+    implementation "org.apache.shiro:shiro-crypto-core:${shiroVersion}"
+    implementation "org.apache.shiro:shiro-lang:${shiroVersion}"
     implementation 'org.apache.sshd:sshd-core:2.20.1'
     implementation 'org.apache.sshd:sshd-sftp:2.20.1'
     implementation 'org.apache.tika:tika-core:3.3.3'
