@@ -107,6 +107,7 @@ dependencies {
     runtimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.26.1' // for external jars using slf4j: routes logging to log4j 2
     runtimeOnly 'org.apache.logging.log4j:log4j-web:2.26.1' //???
     runtimeOnly 'org.apache.logging.log4j:log4j-jcl:2.26.1' // need to constrain to version to avoid classpath conflict (ReflectionUtil)
+    runtimeOnly 'org.apache.logging.log4j:log4j-layout-template-json:2.26.1' // needed when logging in JSON format (e.g. in cloud providers)
 
     // specify last codenarc version for java 17 compliance
     codenarc('org.codenarc:CodeNarc:3.7.0')

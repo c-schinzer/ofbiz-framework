@@ -33,10 +33,16 @@ under the License.
 
       The settings in this configuration file can be changed without restarting the instance: every 60 seconds the file
       is checked for modifications.
+
+      Addition for GCP users: using envvar OFBIZ_CONSOLE_APPENDER=jsonout will log in JSON format to stdout, which is
+      the preferred way for GCP logging.
     -->
     <Appenders>
         <Console name="stdout" target="SYSTEM_OUT">
             <PatternLayout pattern="%date{DEFAULT} |%-20.20thread |%-30.30logger{1}|%level{length=1}| %message%n"/>
+        </Console>
+        <Console name="jsonout" target="SYSTEM_OUT">
+            <JsonTemplateLayout eventTemplateUri="classpath:Log4jJsonEventTemplate.json"/>
         </Console>
 
         <RollingFile name="ofbiz" fileName="runtime/logs/ofbiz.log" filePattern="runtime/logs/ofbiz.log.%i">
@@ -60,7 +66,7 @@ under the License.
 
         <Async name="async">
             <AppenderRef ref="ofbiz"/>
-            <AppenderRef ref="stdout"/>
+            <AppenderRef ref="${env:OFBIZ_CONSOLE_APPENDER:-stdout}"/>
             <AppenderRef ref="error"/>
         </Async>
     </Appenders>
