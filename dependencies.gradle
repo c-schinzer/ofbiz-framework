@@ -134,4 +134,6 @@ dependencies {
 
     // specify last codenarc version for java 17 compliance
     codenarc('org.codenarc:CodeNarc:3.7.0')
+
+    runtimeOnly 'org.postgresql:postgresql:42.5.4' // required for the DB connector
 }
